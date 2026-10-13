@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-bg: #0a192f;
+            --text-primary: #ffffff; /* Brighter white */
+            --accent: #64ffda;
+            --secondary-bg: #112240;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .navbar {
+            background-color: rgba(10, 25, 47, 0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link {
+            color: var(--text-primary) !important;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent) !important;
+        }
+
+        .section {
+            min-height: 100vh;
+            padding: 100px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .accent-text {
+            color: var(--accent);
+        }
+
+        .card {
+            background-color: var(--secondary-bg);
+            border: none;
+            transition: transform 0.3s ease;
+            color: #ffffff;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent);
+        }
+
+        .btn-custom {
+            background-color: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            transition: all 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: rgba(100, 255, 218, 0.1);
+            color: var(--accent);
+        }
+
+        .form-control {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--accent);
+            color: var(--text-primary);
+        }
+
+        .form-control:focus {
+            background-color: var(--secondary-bg);
+            border-color: var(--accent);
+            color: var(--text-primary);
+            box-shadow:white;
+        }
+
+        /* Update text colors for better visibility */
+        .lead {
+            color: #f0f0f0; /* Light gray */
+        }
+
+        .card-text {
+            color: #e0e0e0; /* Slightly dimmed white */
+        }
+
+        /* Make skill titles brighter */
+        .card h4 {
+            color: #ffffff;
+        }
+
+        /* Brighten up section headings */
+        h2 {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Make form placeholder text more visible */
+        .form-control::placeholder {
+            color: #bbbbbb;
+        }
+
+        /* Add these new styles */
+        .profile-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .profile-frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            padding: 20px;
+            background: linear-gradient(45deg, var(--accent), #4a00e0);
+            
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--dark-bg);
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .animal-border {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: 
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="%2364ffda"><path d="M12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2Z"/></svg>') 0 0 / 50px 50px repeat;
+            animation: borderRotate 15s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes borderRotate {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        .profile-container::before,
+        .profile-container::after {
+            content: '';
+            position: absolute;
+            width: 110%;
+            height: 110%;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            top: -5%;
+            left: -5%;
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        .profile-container::after {
+            animation-delay: 1s;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.2; }
+            100% { transform: scale(1); opacity: 0.5; }
+        }
+
+        /* Project gallery (horizontal animal pictures) */
+        .project-card {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .project-info {
+            flex: 1 1 360px;
+            min-width: 280px;
+        }
+
+        .project-gallery {
+            flex: 1 1 420px;
+            min-width: 320px;
+            position: relative;
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(100,255,218,0.06);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+        }
+
+        .gallery-track {
+            display: flex;
+            gap: 12px;
+            transition: transform 0.45s cubic-bezier(.22,.99,.36,1);
+            will-change: transform;
+        }
+
+        .gallery-item {
+            min-width: 220px;
+            height: 140px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(2,6,23,0.6);
+            border: 1px solid rgba(255,255,255,0.03);
+            flex: 0 0 auto;
+            background: #061324;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(6,19,36,0.7);
+            border: 1px solid rgba(100,255,218,0.08);
+            color: var(--accent);
+            cursor: pointer;
+            z-index: 5;
+            transition: background 0.2s;
+        }
+
+        .gallery-btn:hover {
+            background: rgba(100,255,218,0.06);
+        }
+
+        .gallery-btn.left { left: 8px; }
+        .gallery-btn.right { right: 8px; }
+
+        @media (max-width: 768px) {
+            .gallery-item { min-width: 160px; height: 110px; }
+            .project-gallery { padding: 8px; }
+        }
+        /* ===== Mini Projects Section ===== */
+#mini-projects {
+    background: linear-gradient(180deg, #0a192f, #0f2749);
+}
+
+#miniHeading {
+    font-size: 2.2rem;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
+    animation: fadeInSlide 1s ease-in-out forwards;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.mini-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.mini-card {
+    background-color: var(--secondary-bg);
+    border-radius: 15px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(100, 255, 218, 0.1);
+}
+
+.mini-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(100, 255, 218, 0.25);
+    border-color: rgba(100, 255, 218, 0.4);
+}
+
+.mini-card h4 {
+    color: var(--accent);
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+}
+
+.mini-card p {
+    color: #d0d0d0;
+    font-size: 0.95rem;
+    min-height: 50px;
+    line-height: 1.4;
+}
+
+.btn-mini {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.6rem 1.4rem;
+    background: transparent;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-mini:hover {
+    background: var(--accent);
+    color: #061324;
+    box-shadow: 0 0 10px rgba(100, 255, 218, 0.6);
+}
+
+/* Add this inside your existing style tag */
+.btn-project-nav {
+        padding: 0.6rem 1.2rem;
+        background: rgba(100,255,218,0.05);
+        color: var(--accent);
+        border: 1px solid rgba(100,255,218,0.1);
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-project-nav:hover {
+        background: rgba(100,255,218,0.1);
+        border-color: var(--accent);
+        color: var(--accent);
+        transform: translateY(-2px);
+    }
+
+    .project-links {
+        border-top: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        padding: 1.5rem 0;
+    }
+
+        /* Modal for live project preview */
+        .live-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2,6,23,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1200;
+            padding: 2rem;
+        }
+        .live-modal .modal-inner {
+            width: 100%;
+            max-width: 1100px;
+            height: 80vh;
+            background: #061324;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+            border: 1px solid rgba(100,255,218,0.06);
+            display: flex;
+            flex-direction: column;
+        }
+        .live-modal .modal-header {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding: 0.6rem 1rem;
+            background: linear-gradient(90deg, rgba(100,255,218,0.03), transparent);
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .live-modal .modal-header .title { color: #e6fff9; font-weight:600; }
+        .live-modal .modal-close {
+            background: transparent;
+            border: 1px solid rgba(100,255,218,0.12);
+            color: var(--accent);
+            width:34px;
+            height:34px;
+            border-radius:8px;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+        }
+        .live-modal iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: white;
+            flex:1;
+        }
+        @media (max-width: 768px) {
+            .live-modal .modal-inner { height: 85vh; max-width: 95%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#skills">Skills</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">Hi, I'm <span class="accent-text">Shivani chawla</span></h1>
+                    <h2 class="mb-4">Aspiring web Developer</h2>
+                    <p class="lead">Passionate about creating web applications and learning new technologies.</p>
+                    <div class="social-links mt-4">
+                        <a href="https://github.com/yourusername" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://linkedin.com/in/yourprofile" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <div class="profile-container">
+                        <div class="profile-frame">
+                            <img src="myphoto.jpeg" alt="Profile" class="profile-image">
+                        </div>
+                        <div class="animal-border"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="text-center mb-5">About Me</h2>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card p-4">
+                        <p class="lead mb-4">Hi, I am Shivani!</p>
+                        <p class="mb-3">Currently pursuing BCA with a strong interest in web development and programming. I have acquired knowledge in various technologies including:</p>
+                        <ul class="list-unstyled mb-4">
+                            <li><i class="fas fa-check-circle accent-text me-2"></i>HTML, CSS, JavaScript</li>
+                            <li><i class="fas fa-check-circle accent-text me-2"></i>Python</li>
+                            <li><i class="fas fa-check-circle accent-text me-2"></i>SQL</li>
+                        </ul>
+                        <p class="mb-3">I enjoy building small projects to improve my coding skills and am currently on the path to becoming a full stack developer. I'm also exploring modern frameworks like Bootstrap to become industry-ready.</p>
+                        <p>My goal is to combine my technical skills with creative problem-solving to build impactful web applications.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section">
+        <div class="container">
+            <h2 class="text-center mb-5">Skills</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card text-center p-4">
+                        <i class="fab fa-html5 skill-icon"></i>
+                        <h4 class="mt-3">HTML5</h4>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center p-4">
+                        <i class="fab fa-css3-alt skill-icon"></i>
+                        <h4 class="mt-3">CSS3</h4>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center p-4">
+                        <i class="fab fa-js skill-icon"></i>
+                        <h4 class="mt-3">JavaScript</h4>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center p-4">
+                        <i class="fab fa-python skill-icon"></i>
+                        <h4 class="mt-3">Python</h4>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center p-4">
+                        <i class="fas fa-database skill-icon"></i>
+                        <h4 class="mt-3">SQL</h4>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card text-center p-4">
+                        <i class="fab fa-bootstrap skill-icon"></i>
+                        <h4 class="mt-3">Bootstrap</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="container">
+            <h2 class="text-center mb-5">Projects</h2>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card p-4">
+                        <div class="project-card">
+                            <div class="project-info">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div style="width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#4a00e0);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                        <i class="fas fa-paw" style="color:#061324;font-size:1.4rem;"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="mb-1">Pet Adoption & Donation</h4>
+                                        <small class="text-muted">Stack: <span style="color:#64ffda;font-weight:600;">HTML</span> • <span style="color:#64ffda;font-weight:600;">CSS</span> • <span style="color:#64ffda;font-weight:600;">JavaScript</span></small>
+                                    </div>
+                                </div>
+
+                                <p class="card-text mt-3">A responsive web platform for pet adoption and donations. Features include searchable pet listings, donation system, and contact integration.</p>
+
+                                <!-- Project Navigation Links -->
+                                <div class="project-links mt-4 mb-4">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <a href="home.html" class="btn-project-nav">
+                                            <i class="fas fa-home me-2"></i>Home
+                                        </a>
+                                        <a href="about.html" class="btn-project-nav">
+                                            <i class="fas fa-info-circle me-2"></i>About
+                                        </a>
+                                        <a href="adopt.html" class="btn-project-nav">
+                                            <i class="fas fa-heart me-2"></i>Adopt
+                                        </a>
+                                        <a href="donate.html" class="btn-project-nav">
+                                            <i class="fas fa-gift me-2"></i>Donate
+                                        </a>
+                                        <a href="contact.html" class="btn-project-nav">
+                                            <i class="fas fa-envelope me-2"></i>Contact
+                                        </a>c
+                                    </div>
+                                </div>
+
+                                <!-- Source Code Button -->
+                                <div class="mt-4">
+                                    <a href="https://github.com/shivani010-html/Shivani" target="_blank" class="btn" style="background:linear-gradient(90deg,#64ffda,#4a00e0);color:#061324;border:none;font-weight:600;">
+                                        <i class="fab fa-github me-2"></i>View Source on GitHub
+                                    </a>
+                                </div>
+                                <!-- Major Project: Django Full-Stack -->
+                                <div class="mt-4 card p-4" style="margin-top:1.5rem;">
+                                    <h3 class="mb-2">Major Project</h3>
+                                    <div class="d-flex align-items-start gap-3 mb-3">
+                                        <div style="width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#4a00e0);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                            <i class="fas fa-paw" style="color:#061324;font-size:1.4rem;"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1">Pet Adoption & Donation — Django (Full-Stack)</h4>
+                                            <small class="text-muted">Backend: <span style="color:#64ffda;font-weight:600;">Django</span> • Frontend: <span style="color:#64ffda;font-weight:600;">HTML/CSS/JS</span></small>
+                                        </div>
+                                    </div>
+                                    <p class="card-text">A full-featured Django application with models for pets and donors, authentication, admin dashboard, and a donation flow. Deployable to any WSGI-compatible host; The donation system is designed with an API-ready payment architecture.
+Live payment gateway integration is currently disabled due to security and production key requirements.
+
+
+                             <a href="https://github.com/shivani010-html/django-project" target="_blank" rel="noopener" class="btn" style="background:linear-gradient(90deg,#64ffda,#4a00e0);color:#061324;border:none;font-weight:600;">
+                                            <i class="fab fa-github me-2"></i>View on GitHub
+                                        </a> 
+                                         <div class="project"> 
+        <h3>Institute static  Website</h3>
+        <p>HTML, CSS, JavaScript</p>
+        <a href="https://myproject-ai.netlify.app/" target="_blank" class="btn" style="background:linear-gradient(90deg,#64ffda,#4a00e0);color:#061324;border:none;font-weight:600;">
+                                        <i class="fab fa-github me-2"></i>view live link
+                                    </a>
+    </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+        </div>
+    </section>
+                                <!-- Mini Projects Section -->
+    <section id="mini-projects" class="section">
+        <div class="container">
+            <h2 class="text-center mb-5" id="miniHeading">Mini Projects <span class="accent-text">(HTML, CSS, JavaScript)</span></h2>
+
+            <div class="mini-grid">
+                <!-- Project 1 -->
+                <div class="mini-card">
+                    <h4>Calculator</h4>
+                    <p>A simple calculator app that performs basic arithmetic operations with a clean interface.</p>
+                    <a href="calculator.html" class="btn-mini">Live Demo</a>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="mini-card">
+                    <h4>Typing Speed Tester</h4>
+                    <p>Measures your typing speed and accuracy in real time with a smooth, minimal design.</p>
+                    <a href="typing.html" class="btn-mini">Live Demo</a>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="mini-card">
+                    <h4>ATM Machine Simulator</h4>
+                    <p>A mock ATM interface to simulate balance inquiry, withdrawals, and deposits securely.</p>
+                    <a href="atm.html" class="btn-mini">Live Demo</a>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="mini-card">
+                    <h4>To-Do List App</h4>
+                    <p>A task management app that lets you add, mark complete, and delete tasks easily.</p>
+                    <a href="to-do-list.html" class="btn-mini">Live Demo</a>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="mini-card">
+                    <h4>Theme Switcher</h4>
+                    <p>Switch between light and dark themes dynamically with smooth transitions.</p>
+                    <a href="thread.html" class="btn-mini">Live Demo</a>
+                </div>
+
+                <!-- Project 6: Django Full-Stack -->
+               
+            </div>
+        </div>
+    </section>
+
+
+                           
+                               
+    
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2 class="text-center mb-5">Contact Me</h2>
+            <div class="row">
+                <div class="col-lg-6 mx-auto">
+                    <form>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Your Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" placeholder="Your Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="5" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-custom w-100">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+<footer class="py-4" style="background-color: #061324; margin-top: 4rem;">
+    <div class="container">
+        <div class="row text-center">
+            <!-- Social Links -->
+            <div class="mb-3">
+                <a href="https://github.com/yourusername" target="_blank" class="mx-2" style="color: #ffffff; font-size: 1.5rem;">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://linkedin.com/in/yourprofile" target="_blank" class="mx-2" style="color: #ffffff; font-size: 1.5rem;">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="mb-3" style="color: #a8b2d1; font-size: 0.9rem;">
+                <p class="mb-1">
+                    <i class="fas fa-envelope me-2"></i>
+                    <a href="mailto:your.email@example.com" style="color: #a8b2d1; text-decoration: none;">
+                        shivanichawla291@gmail.com
+                    </a>
+                </p>
+                <p class="mb-1">
+                    <i class="fas fa-phone me-2"></i>
+                    <a href="tel:+1234567890" style="color: #a8b2d1; text-decoration: none;">
+                        +1 (234) 567-890
+                    </a>
+                </p>
+            </div>
+
+            <!-- Copyright -->
+            <div style="color: #8892b0; font-size: 0.85rem;">
+                <p class="mb-0">
+                    &copy; 2025 Shivani. All rights reserved.
+                </p>
+                <p class="mb-0" style="font-size: 0.8rem;">
+                    Designed by <i class="fas fa-heart" style="color: var(--accent);"></i> shivani
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <!-- Live demo modal (place before scripts) -->
+    <div id="liveModal" class="live-modal" style="display:none;" aria-hidden="true">
+        <div class="modal-inner" role="dialog" aria-modal="true" aria-label="Live project preview">
+            <div class="modal-header">
+                <div class="title"><i class="fas fa-paw me-2" style="color:var(--accent)"></i> Pet Adoption & Donation — Live Preview</div>
+                <button id="closeLive" class="modal-close" title="Close"><i class="fas fa-times"></i></button>
+            </div>
+            <iframe id="liveFrame" src="" frameborder="0" title="Pet Adoption Live Preview"></iframe>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Simple horizontal gallery controls
+        (function() {
+            const track = document.getElementById('galleryTrack');
+            const prev = document.getElementById('galleryPrev');
+            const next = document.getElementById('galleryNext');
+            const item = track.querySelector('.gallery-item');
+            if (!track || !item) return;
+
+            const itemWidth = item.getBoundingClientRect().width + 12; // include gap
+            let position = 0;
+
+            prev.addEventListener('click', () => {
+                position = Math.min(position + itemWidth * 1.1, 0);
+                track.style.transform = `translateX(${position}px)`;
+            });
+
+            next.addEventListener('click', () => {
+                const maxScroll = -(track.scrollWidth - track.parentElement.clientWidth);
+                position = Math.max(position - itemWidth * 1.1, maxScroll);
+                track.style.transform = `translateX(${position}px)`;
+            });
+
+            // allow swipe/drag on touch devices
+            let startX = 0, currentX = 0, isDown = false;
+            track.parentElement.addEventListener('pointerdown', (e) => {
+                isDown = true;
+                startX = e.clientX;
+                track.style.transition = 'none';
+                track.setPointerCapture(e.pointerId);
+            });
+            track.parentElement.addEventListener('pointermove', (e) => {
+                if (!isDown) return;
+                currentX = e.clientX;
+                const dx = currentX - startX;
+                track.style.transform = `translateX(${position + dx}px)`;
+            });
+            track.parentElement.addEventListener('pointerup', (e) => {
+                if (!isDown) return;
+                isDown = false;
+                const dx = e.clientX - startX;
+                position = Math.max(Math.min(position + dx, 0), -(track.scrollWidth - track.parentElement.clientWidth));
+                track.style.transition = 'transform 0.45s cubic-bezier(.22,.99,.36,1)';
+                track.style.transform = `translateX(${position}px)`;
+            });
+            track.parentElement.addEventListener('pointerleave', (e) => {
+                if (isDown) track.parentElement.dispatchEvent(new PointerEvent('pointerup', {bubbles:true}));
+            });
+        })();
+
+        // Live project modal logic
+        (function () {
+            const openBtn = document.getElementById('openLive');
+            const modal = document.getElementById('liveModal');
+            const closeBtn = document.getElementById('closeLive');
+            const frame = document.getElementById('liveFrame');
+
+            if (!openBtn || !modal || !closeBtn || !frame) return;
+
+            openBtn.addEventListener('click', () => {
+                const src = openBtn.getAttribute('data-src') || 'pet-adoption/index.html';
+                // set iframe src only when opening to avoid preloading
+                frame.src = src;
+                modal.style.display = 'flex';
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            });
+
+            function closeModal() {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                frame.src = ''; // unload
+                document.body.style.overflow = '';
+            }
+
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display === 'flex') closeModal(); });
+        })();
+    </script>
+</body>
+</html> 
+
+
+
+
